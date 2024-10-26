@@ -4,12 +4,20 @@
 module.exports = {
   async up(queryInterface, Sequelize) {
     
-    await queryInterface.createTable("Users", {
+    await queryInterface.createTable('Items', {
       id: {
         type: Sequelize.INTEGER,
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
+      },
+      userId: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        references: {
+          model: 'Users',
+          key: 'id'
+        }
       },
       name: {
         type: Sequelize.STRING(20),
@@ -18,48 +26,24 @@ module.exports = {
           len: [2, 20],
         },
       },
-      last_name: {
-        type: Sequelize.STRING(20),
-        allowNull: false,
-        validate: {
-          len: [2, 20],
-        },
-      },
-      birth_date: {
-        type: Sequelize.DATE,
-        allowNull: false,
-        validate: {
-          isDate: true,
-        },
-      },
-      phone: {
+      link: {
         type: Sequelize.STRING,
+        allowNull: false,
+        validate: {
+          isUrl: true,
+        },
+      },
+      createdAt: {
         allowNull: true,
-      },
-      email: {
-        type: Sequelize.STRING,
-        allowNull: false,
-        unique: true
-      },
-      password: {
-        type: Sequelize.STRING,
-        allowNull: false,
-        validate: {
-          len: [8, 100],
-          is: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/,
-        },
-      },
-      created_at: {
-        allowNull: false,
         type: Sequelize.DATE,
         defaultValue: Sequelize.literal("CURRENT_TIMESTAMP"),
       },
-      updated_at: {
-        allowNull: false,
+      updatedAt: {
+        allowNull: true,
         type: Sequelize.DATE,
         defaultValue: Sequelize.literal("CURRENT_TIMESTAMP"),
       },
-      deleted_at: {
+      deletedAt: {
         allowNull: true,
         type: Sequelize.DATE
       },
@@ -67,6 +51,6 @@ module.exports = {
   },
   
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable("Users");
+    await queryInterface.dropTable('Items');
   }
 };

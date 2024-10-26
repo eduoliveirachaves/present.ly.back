@@ -11,6 +11,14 @@ const Users = connection.define(
       autoIncrement: true,
       primaryKey: true,
     },
+    username: {
+      type: DataTypes.STRING(20),
+      allowNull: false,
+      unique: true,
+      validate: {
+        len: [2, 20],
+      }
+    },
     name: {
       type: DataTypes.STRING(20),
       allowNull: false,

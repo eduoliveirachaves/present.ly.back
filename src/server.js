@@ -24,6 +24,13 @@ class Server {
       console.log('Erro ao conectar com o banco de dados: ', error);
       throw error;
     }
+    try {
+      await connection.sync();
+      console.log('Tabelas criadas!');
+    }catch (error) {
+      console.log('Erro ao criar as tabelas: ', error);
+      throw error;
+    }
   }
 
   async initializeServer(app) {

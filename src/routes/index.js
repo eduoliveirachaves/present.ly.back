@@ -6,7 +6,8 @@ const routes = Router();
 
 routes.use('/api', [
   routesFromAuth(),
-  routesFromUsers()
+  routesFromUsers(),
+  routesFromItems()
 ]);
 
 module.exports = routes;
