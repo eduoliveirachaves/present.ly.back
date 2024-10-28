@@ -25,7 +25,7 @@ class UsersController {
         email,
         password
       })
-
+      //eu nao tenho que dar o token aqui?
       return res
         .status(201)
         .send({ data: "Usuario salvo com sucesso!" });

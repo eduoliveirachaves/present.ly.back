@@ -11,7 +11,7 @@ module.exports = {
         autoIncrement: true,
         primaryKey: true,
       },
-      userId: {
+      user_id: {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
@@ -26,24 +26,45 @@ module.exports = {
           len: [2, 20],
         },
       },
-      link: {
-        type: Sequelize.STRING,
+      description: {
+        type: Sequelize.STRING(20),
         allowNull: false,
+        validate: {
+          len: [2, 100],
+        },
+      },
+      category: {
+        type: Sequelize.STRING(20),
+        allowNull: true,
+        validate: {
+          len: [2, 20],
+        },
+      },
+      price: {
+        type: Sequelize.DECIMAL(10, 2),
+        allowNull: true,
+        validate: {
+          isDecimal: true,
+        },
+      },
+      url: {
+        type: Sequelize.STRING,
+        allowNull: true,
         validate: {
           isUrl: true,
         },
       },
-      createdAt: {
+      created_at: {
         allowNull: true,
         type: Sequelize.DATE,
         defaultValue: Sequelize.literal("CURRENT_TIMESTAMP"),
       },
-      updatedAt: {
+      updated_at: {
         allowNull: true,
         type: Sequelize.DATE,
         defaultValue: Sequelize.literal("CURRENT_TIMESTAMP"),
       },
-      deletedAt: {
+      deleted_at: {
         allowNull: true,
         type: Sequelize.DATE
       },

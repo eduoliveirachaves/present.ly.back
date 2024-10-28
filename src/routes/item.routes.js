@@ -1,20 +1,21 @@
 const { Router } = require("express");
-const { auth, validation } = require("../middleware/");
-const { item } = require("../controllers/item.controller");
+const { auth } = require("../middleware/auth");
+const { createItem, listAll } = require("../controllers/item.controller");
 
 
 class ItemRoutes {
   routesFromItems() {
     const itemRoutes = Router();
-
-    //auth / validation = middleware
-    itemRoutes.post("/item", auth, item.createItem);
     
-    //list all items
-    // itemRoutes.get("/item", item.getItems);
-    itemRoutes.put("/item/:id", auth, item.editItem);
-    // itemRoutes.delete("/item/:id item.deleteItem);
-
+    //criar item
+    itemRoutes.post("/item", auth,  createItem);
+    
+    //listar todos os items
+    itemRoutes.get("/item", auth, listAll)
+    
+    //editar um item
+    // itemRoutes.put("/item", auth, editItem)
+    
     return itemRoutes;
   }
 }

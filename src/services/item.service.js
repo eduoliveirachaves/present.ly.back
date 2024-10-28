@@ -1,42 +1,39 @@
 const {Items} = require('../models/item.model');
 
 class ItemService {
-  
-  
-  async createItem({userId, name, link}) {
+  async createItem({
+    user_id,
+    name,
+    description,
+    category,
+    price,
+    url
+  }) {
     try {
-      await Items.createItem({
-        userId,
+      await Items.create({
+        user_id,
         name,
-        link,
+        description,
+        category,
+        price,
+        url
       })
-      return {message: "Item criado com sucesso!"}
       
+      return {message: "Item salvo com sucesso!"};
     } catch (error) {
       console.log(error)
-      throw new Error("Criacao do item falhou")
+      throw new Error('Nao foi possivel criar o item userId e nome: ' + user_id + ' ' + name)
     }
   }
   
-  async editItem({}) {
+  async listAllItems({user_id}) {
     try {
+      const data = await Items.findAll({where: {user_id}});
+      return {message: "Items listados com sucesso", data};
       
-      
-      return {message: "Item modificado com sucesso!"}
     } catch (error) {
-      console.log(error)
-      throw new Error("Nao foi possivel modificar o item")
-    }
-  }
-  
-  async deleteItem({id}) {
-    try {
-      await Items.deleteItem(id)
-      
-      return {message: "Item deletado com sucesso!"}
-    } catch (error) {
-      console.log(error)
-      throw new Error("Nao foi possivel deletar o item")
+      console.log("ESTA DANDO ERRO AQUI " + error.message)
+      return {message: "Erro ao listar items"}
     }
   }
 }

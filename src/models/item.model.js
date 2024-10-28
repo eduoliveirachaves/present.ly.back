@@ -6,7 +6,7 @@ const { connection } = require("../database/connection");
 //link e obrigatorio?
 
 const Items = connection.define(
-  "Products",
+  "Items",
   {
     id: {
       type: DataTypes.INTEGER,
@@ -14,9 +14,13 @@ const Items = connection.define(
       autoIncrement: true,
       primaryKey: true,
     },
-    userId: {
+    user_id: {
       type: DataTypes.INTEGER,
       allowNull: false,
+      references: {
+        model: "Users",
+        key: "id",
+      },
     },
     name: {
       type: DataTypes.STRING(20),
@@ -25,31 +29,52 @@ const Items = connection.define(
         len: [2, 20],
       },
     },
-    link: {
-      type: DataTypes.STRING,
+    description: {
+      type: DataTypes.STRING(20),
       allowNull: false,
+      validate: {
+        len: [2, 100],
+      },
+    },
+    category: {
+      type: DataTypes.STRING(20),
+      allowNull: true,
+      validate: {
+        len: [2, 20],
+      },
+    },
+    price: {
+      type: DataTypes.DECIMAL(10, 2),
+      allowNull: true,
+      validate: {
+        isDecimal: true,
+      },
+    },
+    url: {
+      type: DataTypes.STRING,
+      allowNull: true,
       validate: {
         isUrl: true,
       },
     },
-    createdAt: {
+    created_at: {
       allowNull: true,
       type: DataTypes.DATE
     },
-    updatedAt: {
+    updated_at: {
       allowNull: true,
       type: DataTypes.DATE
     },
-    deletedAt: {
+    deleted_at: {
       allowNull: true,
       type: DataTypes.DATE
     },
   },
   {
-    tableName: "Product",
+    tableName: "Items",
     timestamps: true,
     paranoid: true,
   }
 );
 
-module.exports = { Products: Items };
+module.exports = { Items : Items };

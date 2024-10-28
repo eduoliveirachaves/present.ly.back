@@ -6,16 +6,22 @@ config();
 class ItemsController {
   async createItem(req, res) {
     try {
-      const userId = req.user.id;
+      const user_id = req.user.id;
       const {
         name,
-        link
+        description,
+        category,
+        price,
+        url
       } = req.body;
       
       const data = await ItemService.createItem({
-        userId,
+        user_id,
         name,
-        link
+        description,
+        category: category || null,
+        price: price || null,
+        url: url || null
       })
       
       return res
@@ -29,31 +35,18 @@ class ItemsController {
     }
   }
   
-  async editItem(req, res) {
+  async listAll(req, res) {
     try {
-      const userId = req.user.id;
-      const {
-        name,
-        link
-      } = req.body;
-      
-      const data = await ItemService.editItem({
-        userId,
-        name,
-        link
-      })
-      
-      return res
-        .status(201)
-        .send({data: "Item editado com sucesso!"});
+      const user_id = req.user.id;
+      console.log("USER ID " + user_id);
+      const allItems = await ItemService.listAllItems({user_id});
+      console.log("ALL ITEMS " + allItems);
+      res.json({data: allItems})
     } catch (error) {
-      return res.status(400).send({
-        data: "Erro ao editar item",
-        error: error.message,
-      });
+      console.log(error.message)
     }
+    
   }
-  
 }
 
 module.exports = new ItemsController();

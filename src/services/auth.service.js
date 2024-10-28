@@ -1,10 +1,10 @@
 const bcrypt = require("bcrypt");
-const { sign } = require("jsonwebtoken");
+const { sign, verify } = require("jsonwebtoken");
 const UserService = require('./user.service')
 const { config } = require("dotenv");
 
 config();
-//login
+
 class AuthService {
   async login({
     email,
