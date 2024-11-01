@@ -23,10 +23,10 @@ const Items = connection.define(
       },
     },
     name: {
-      type: DataTypes.STRING(20),
+      type: DataTypes.STRING(60),
       allowNull: false,
       validate: {
-        len: [2, 20],
+        len: [2, 60],
       },
     },
     description: {

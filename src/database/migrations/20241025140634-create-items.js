@@ -20,10 +20,10 @@ module.exports = {
         }
       },
       name: {
-        type: Sequelize.STRING(20),
+        type: Sequelize.STRING(60),
         allowNull: false,
         validate: {
-          len: [2, 20],
+          len: [2, 60],
         },
       },
       description: {
