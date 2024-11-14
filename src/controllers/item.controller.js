@@ -1,5 +1,6 @@
-const {config} = require("dotenv");
+const { config } = require("dotenv");
 const ItemService = require("../services/item.service");
+const helper = require("../helpers/responseHelper");
 
 config();
 
@@ -7,49 +8,65 @@ class ItemsController {
   async createItem(req, res) {
     try {
       const user_id = req.user.id;
-      const {
-        name, description, category, price, url
-      } = req.body;
+      const { name, description, category, url } = req.body;
 
-      await ItemService.create({
-        user_id, name, description, category: category || null, price: price || null, url: url || null
-      })
+      if (!name || !url) {
+        return res.status(400).send({
+          data: "Nome e url são campos obrigatórios",
+        });
+      }
 
-      return res
-        .status(201)
-        .send({data: "Item criado com sucesso!"});
-    } catch (error) {
-      return res.status(400).send({
-        data: "Erro ao criar item", error: error.message,
+      const newItem = await ItemService.create({
+        user_id,
+        name,
+        description: description || null,
+        category: category || null,
+        url,
       });
+
+      return helper.success(res, "Item criado com sucesso", newItem, 201);
+    } catch (error) {
+      return helper.error(res, error.message);
     }
   }
 
-  async listAll(req, res) {
+  async getAllItems(req, res) {
     try {
       const user_id = req.user.id;
+      const filter = {};
 
-      const allItems = await ItemService.listAll({user_id});
+      //filtro por categoria ou por data
+      if (req.query.category) filter.category = req.query.category;
+      if (req.query.date) filter.date = true;
 
-      res.json({data: allItems}).status(400)
+      const allItems = await ItemService.getAll({ user_id, filter });
+
+      // caso nao tenha items cadastrados
+      if (!allItems || allItems.length === 0) {
+        return helper.error(res, "Nenhum item encontrado", 400);
+      }
+
+      return helper.success(res, "Items encontrados", allItems, 200);
     } catch (error) {
-      console.log(error.message)
-      return res.status(400).send({
-        data: "Nao foi possivel listar os Items", error: error.message
-      })
+      console.log(error.message);
+      return helper.error(res, "Erro ao buscar items");
     }
   }
 
-  async listOneItem(req, res) {
+  async getOneItem(req, res) {
     try {
       const user_id = req.user.id;
       const item_id = req.params.id;
+      const item = await ItemService.getOne({ user_id, item_id });
 
-      const item = await ItemService.findOne({user_id, item_id});
+      if (!item) {
+        return helper.error(res, "Item não encontrado", 400);
+      }
 
-      res.json({data: item});
+      return helper.success(res, "Item encontrado", item, 200);
     } catch (e) {
-      console.log(e.message)
+      console.log(e.message);
+      helper.error(res, "Erro ao buscar item");
     }
   }
 
@@ -57,16 +74,24 @@ class ItemsController {
     try {
       const id = req.params.id;
       const user_id = req.user.id;
-      const {
-        name, description, category, price, url
-      } = req.body;
-      const updated = await ItemService.edit({id, user_id, name, description, category, price, url});
-      res.json({message: "Item editado com sucesso: ", updated}).status(200)
+      const { name, description, category, url } = req.body;
+      const updated = await ItemService.edit({
+        id,
+        user_id,
+        name,
+        description,
+        category,
+        url,
+      });
+
+      if (!updated) {
+        return helper.error(res, "Item não encontrado", 400);
+      }
+
+      return helper.success(res, "Item editado com sucesso", updated);
     } catch (e) {
-      console.log(e)
-      res.send({
-        message: "Um erro ocorreu ao editar o item", error: e.message
-      }).status(401)
+      console.log(e);
+      return helper.error(res, "Erro ao editar item");
     }
   }
 
@@ -74,15 +99,14 @@ class ItemsController {
     try {
       const user_id = req.user.id;
       const id = req.params.id;
-      const item = await ItemService.delete({user_id, id})
+      const item = await ItemService.delete({ user_id, id });
 
-      return res.json(item).status(200);
+      return helper.success(res, "Item deletado com sucesso", item);
     } catch (e) {
-      res.send(e.message).status(401);
-      console.log(e.message)
+      console.log(e.message);
+      return helper.error(res, "Erro ao deletar item");
     }
   }
-
 }
 
 module.exports = new ItemsController();

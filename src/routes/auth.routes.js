@@ -5,7 +5,7 @@ class AuthRoutes {
   routesFromAuth() {
     const authRoutes = Router();
 
-    authRoutes.post("/auth/login", login)
+    authRoutes.post("/auth/login", login);
 
     return authRoutes;
   }

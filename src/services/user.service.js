@@ -9,7 +9,7 @@ class UserService {
     birthDate,
     phone,
     email,
-    password
+    password,
   }) {
     try {
       await Users.create({
@@ -18,24 +18,24 @@ class UserService {
         birthDate,
         phone,
         email,
-        password
-      })
+        password,
+      });
 
       return { message: "Usuario salvo com sucesso!" };
     } catch (error) {
-      console.log(error)
-      throw new Error('Deu ruim')
+      console.log(error);
+      throw new Error("Deu ruim");
     }
   }
 
   async findUserByEmail({ email }) {
     const user = await Users.findOne({ where: { email } });
-    
+
     if (!user) {
       throw new Error("E-mail ou senha incorreta");
     }
 
-    return user
+    return user;
   }
 }
 

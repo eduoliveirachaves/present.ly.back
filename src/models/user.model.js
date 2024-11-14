@@ -42,7 +42,7 @@ const Users = connection.define(
       validate: {
         isEmail: true,
       },
-      unique: true
+      unique: true,
     },
     password: {
       type: DataTypes.STRING,
@@ -54,15 +54,15 @@ const Users = connection.define(
     },
     createdAt: {
       allowNull: true,
-      type: DataTypes.DATE
+      type: DataTypes.DATE,
     },
     updatedAt: {
       allowNull: true,
-      type: DataTypes.DATE
+      type: DataTypes.DATE,
     },
     deletedAt: {
       allowNull: true,
-      type: DataTypes.DATE
+      type: DataTypes.DATE,
     },
   },
   {
@@ -83,7 +83,7 @@ const Users = connection.define(
         }
       },
     },
-  }
+  },
 );
 
 module.exports = { Users };

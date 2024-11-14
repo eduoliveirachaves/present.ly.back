@@ -1,10 +1,9 @@
-'use strict';
+"use strict";
 
-/** @type {import('sequelize-cli').Migration} */
+/** @type {import("sequelize-cli").Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    
-    await queryInterface.createTable('Items', {
+    await queryInterface.createTable("Items", {
       id: {
         type: Sequelize.INTEGER,
         allowNull: false,
@@ -15,9 +14,9 @@ module.exports = {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
-          model: 'Users',
-          key: 'id'
-        }
+          model: "Users",
+          key: "id",
+        },
       },
       name: {
         type: Sequelize.STRING(60),
@@ -28,7 +27,7 @@ module.exports = {
       },
       description: {
         type: Sequelize.STRING(20),
-        allowNull: false,
+        allowNull: true,
         validate: {
           len: [2, 100],
         },
@@ -40,19 +39,17 @@ module.exports = {
           len: [2, 20],
         },
       },
-      price: {
-        type: Sequelize.DECIMAL(10, 2),
-        allowNull: true,
-        validate: {
-          isDecimal: true,
-        },
-      },
       url: {
         type: Sequelize.STRING,
-        allowNull: true,
+        allowNull: false,
         validate: {
           isUrl: true,
         },
+      },
+      priority: {
+        type: Sequelize.INTEGER,
+        allowNull: true,
+        defaultValue: 0,
       },
       created_at: {
         allowNull: true,
@@ -66,12 +63,12 @@ module.exports = {
       },
       deleted_at: {
         allowNull: true,
-        type: Sequelize.DATE
+        type: Sequelize.DATE,
       },
     });
   },
-  
+
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('Items');
-  }
+    await queryInterface.dropTable("Items");
+  },
 };

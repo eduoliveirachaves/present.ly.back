@@ -1,7 +1,7 @@
-const express = require('express');
-const cors = require('cors');
-const { connection } = require('./database/connection');
-const routes = require('./routes');
+const express = require("express");
+const cors = require("cors");
+const { connection } = require("./database/connection");
+const routes = require("./routes");
 
 class Server {
   constructor(server = express()) {
@@ -19,16 +19,16 @@ class Server {
   async database() {
     try {
       await connection.authenticate();
-      console.log('Conexão bem sucedida!');
+      console.log("Conexão bem sucedida!");
     } catch (error) {
-      console.log('Erro ao conectar com o banco de dados: ', error);
+      console.log("Erro ao conectar com o banco de dados: ", error);
       throw error;
     }
     try {
       await connection.sync();
-      console.log('Tabelas criadas!');
-    }catch (error) {
-      console.log('Erro ao criar as tabelas: ', error);
+      console.log("Tabelas criadas!");
+    } catch (error) {
+      console.log("Erro ao criar as tabelas: ", error);
       throw error;
     }
   }

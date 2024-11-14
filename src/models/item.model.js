@@ -1,9 +1,9 @@
 const { DataTypes } = require("sequelize");
 const { connection } = require("../database/connection");
 
-//o que exatamente vamos salvar? preco? descricao? link? categoria?
+//o que exatamente vamos salvar? preco? nao, descricao? opcional, link? sim, categoria? opcional eu acho
 //o que e possivel pegar do link?
-//link e obrigatorio?
+//link e obrigatorio? sim
 
 const Items = connection.define(
   "Items",
@@ -31,7 +31,7 @@ const Items = connection.define(
     },
     description: {
       type: DataTypes.STRING(20),
-      allowNull: false,
+      allowNull: true,
       validate: {
         len: [2, 100],
       },
@@ -43,38 +43,36 @@ const Items = connection.define(
         len: [2, 20],
       },
     },
-    price: {
-      type: DataTypes.DECIMAL(10, 2),
-      allowNull: true,
-      validate: {
-        isDecimal: true,
-      },
-    },
     url: {
       type: DataTypes.STRING,
-      allowNull: true,
+      allowNull: false,
       validate: {
         isUrl: true,
       },
     },
+    priority: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+      defaultValue: 0,
+    },
     created_at: {
       allowNull: true,
-      type: DataTypes.DATE
+      type: DataTypes.DATE,
     },
     updated_at: {
       allowNull: true,
-      type: DataTypes.DATE
+      type: DataTypes.DATE,
     },
     deleted_at: {
       allowNull: true,
-      type: DataTypes.DATE
+      type: DataTypes.DATE,
     },
   },
   {
     tableName: "Items",
     timestamps: true,
     paranoid: true,
-  }
+  },
 );
 
-module.exports = { Items : Items };
+module.exports = { Items: Items };

@@ -1,5 +1,5 @@
-const {config} = require("dotenv");
-const {verify} = require("jsonwebtoken");
+const { config } = require("dotenv");
+const { verify } = require("jsonwebtoken");
 
 config();
 
@@ -10,7 +10,7 @@ class Auth {
       req.user = verify(token, process.env.SECRET_JWT);
       next();
     } catch (error) {
-      return res.status(401).send({data: "Não autorizado"});
+      return res.status(401).send({ data: "Não autorizado" });
     }
   }
 }

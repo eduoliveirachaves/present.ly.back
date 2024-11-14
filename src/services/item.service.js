@@ -1,97 +1,107 @@
-const {Items} = require('../models/item.model');
+const { Items } = require("../models/item.model");
 
 class ItemService {
-  async create({
-    user_id, name, description, category, price, url
-  }) {
+  async create({ user_id, name, description, category, url, priority }) {
     try {
-      await Items.create({
-        user_id, name, description, category, price, url
-      })
+      const item = await Items.create({
+        user_id,
+        name,
+        description,
+        category,
+        url,
+        priority,
+      });
 
-      return {message: "Item salvo com sucesso!"};
+      return { message: "Item criado com sucesso", item };
     } catch (error) {
-      console.log(error)
-      throw new Error('Nao foi possivel criar o item userId e nome: ' + user_id + ' ' + name)
+      console.log(error);
+      throw new Error(
+        "Nao foi possivel criar o item, userId e nome: " + user_id + " " + name,
+      );
     }
   }
 
-  async listAll({user_id}) {
+  async getAll({ user_id, filter }) {
     try {
-      const data = await Items.findAll({where: {user_id}});
+      const f = filter.category
+        ? { user_id, category: filter.category }
+        : { user_id };
+      const orderFilter = filter.date
+        ? [["created_at", "DESC"]]
+        : [["priority", "DESC"]];
+      const data = await Items.findAll({
+        where: f,
+        order: orderFilter,
+      });
 
-      if (!data) {
-        return {message: "Sua lista esta vazia"}
-      }
-
-      return {message: "Items listados com sucesso", data};
-
+      return data.length ? data : null;
     } catch (error) {
-      console.log("ESTA DANDO ERRO AQUI " + error.message)
-      return {message: "Erro ao listar items"}
+      console.log("ESTA DANDO ERRO SERVICE " + error.message);
+      throw new Error("Erro ao listar items");
     }
   }
 
-  async findOne({user_id, item_id}) {
+  async getOne({ user_id, item_id }) {
     try {
       const data = await Items.findOne({
         where: {
-          id: item_id, user_id
-        }
+          id: item_id,
+          user_id,
+        },
       });
 
       if (!data) {
-        return {message: "Item nao existe"}
+        return;
       }
 
-      return {message: "Item achado: ", data};
-
+      return data;
     } catch (e) {
-      console.log(e.message);
-      console.log("Erro ao buscar Item")
-      return {message: "Erro ao buscar item"}
+      console.log("SERVICE ERROR : ", e.message);
+      throw new Error("Erro ao buscar item");
     }
   }
 
-  async edit({
-    id, user_id, name, description, category, price, url
-  }) {
+  async edit({ id, user_id, name, description, category, url, priority }) {
     try {
-      const item = {
-        name, description, category, price, url,
+      const newItem = {
+        name,
+        description,
+        category,
+        url,
+        priority,
+      };
+      const item = await Items.update(newItem, {
+        where: { user_id, id },
+      });
+
+      if (item === 0) {
+        return;
       }
-      await Items.update(item, {
-        where: {user_id, id},
-      },);
 
-      const itemUpdated = await this.findOne({user_id, item_id: id});
-
-      return {message: "Item atualizado!", data: itemUpdated};
-
+      return await this.getOne({ user_id, item_id: id });
     } catch (e) {
-      console.log(e.message);
-      return {
-        message: "Erro ao atualizar item",
-        error: e.message
-      }
+      console.log("SERVICE ERROR : ", e.message);
+      throw new Error("Erro ao atualizar item");
     }
   }
 
-  async delete({user_id, id}) {
+  async delete({ user_id, id }) {
     try {
-      const deletedAt = new Date();
-      await Items.update({deleted_at: deletedAt}, {where: {user_id, id}});
+      await Items.destroy({ where: { user_id, id } });
 
-      return {message: "Item deletado com sucesso!"}
+      return { message: "Item deletado com sucesso!" };
     } catch (e) {
-      console.log(e.message)
-      return {
-        message: "Erro ao deletar item ID: ", id,
-        error: e.message
-      }
+      console.log(
+        "ITEM A SER DELETADO: ",
+        id,
+        "USER ID",
+        user_id,
+        "ERROR MESSAGE: ",
+        e.message,
+      );
+      throw new Error("Erro ao deletar item");
     }
   }
 }
-
 
 module.exports = new ItemService();
