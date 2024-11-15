@@ -26,17 +26,17 @@ module.exports = {
         },
       },
       description: {
-        type: Sequelize.STRING(20),
+        type: Sequelize.STRING(100),
         allowNull: true,
         validate: {
           len: [2, 100],
         },
       },
       category: {
-        type: Sequelize.STRING(20),
+        type: Sequelize.STRING(30),
         allowNull: true,
         validate: {
-          len: [2, 20],
+          len: [2, 30],
         },
       },
       url: {
@@ -49,7 +49,6 @@ module.exports = {
       priority: {
         type: Sequelize.INTEGER,
         allowNull: true,
-        defaultValue: 0,
       },
       created_at: {
         allowNull: true,

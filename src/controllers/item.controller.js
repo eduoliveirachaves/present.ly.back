@@ -5,10 +5,11 @@ const helper = require("../helpers/responseHelper");
 config();
 
 class ItemsController {
+  //Somente url e nome como obrigatorio, o resto é opcional
   async createItem(req, res) {
     try {
       const user_id = req.user.id;
-      const { name, description, category, url } = req.body;
+      const { name, description, category, url, priority } = req.body;
 
       if (!name || !url) {
         return res.status(400).send({
@@ -22,6 +23,7 @@ class ItemsController {
         description: description || null,
         category: category || null,
         url,
+        priority: priority || 0,
       });
 
       return helper.success(res, "Item criado com sucesso", newItem, 201);
@@ -30,6 +32,7 @@ class ItemsController {
     }
   }
 
+  //sem filtro ele pega por prioridade, o usuario tem a opcao de destacar algum item que ele queira mais
   async getAllItems(req, res) {
     try {
       const user_id = req.user.id;
@@ -37,6 +40,7 @@ class ItemsController {
 
       //filtro por categoria ou por data
       if (req.query.category) filter.category = req.query.category;
+      //mais recente primeiro
       if (req.query.date) filter.date = true;
 
       const allItems = await ItemService.getAll({ user_id, filter });
@@ -74,7 +78,8 @@ class ItemsController {
     try {
       const id = req.params.id;
       const user_id = req.user.id;
-      const { name, description, category, url } = req.body;
+      const { name, description, category, url, priority } = req.body;
+
       const updated = await ItemService.edit({
         id,
         user_id,
@@ -82,6 +87,7 @@ class ItemsController {
         description,
         category,
         url,
+        priority,
       });
 
       if (!updated) {
@@ -100,6 +106,9 @@ class ItemsController {
       const user_id = req.user.id;
       const id = req.params.id;
       const item = await ItemService.delete({ user_id, id });
+      if (!item) {
+        return helper.error(res, "Item não encontrado", 400);
+      }
 
       return helper.success(res, "Item deletado com sucesso", item);
     } catch (e) {

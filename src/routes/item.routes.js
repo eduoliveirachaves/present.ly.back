@@ -7,6 +7,7 @@ class ItemRoutes {
     const itemRoutes = Router();
 
     itemRoutes.use(auth);
+
     // create
     itemRoutes.post("/", c.createItem);
 

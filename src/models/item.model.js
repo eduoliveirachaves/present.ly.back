@@ -30,17 +30,17 @@ const Items = connection.define(
       },
     },
     description: {
-      type: DataTypes.STRING(20),
+      type: DataTypes.STRING(100),
       allowNull: true,
       validate: {
         len: [2, 100],
       },
     },
     category: {
-      type: DataTypes.STRING(20),
+      type: DataTypes.STRING(30),
       allowNull: true,
       validate: {
-        len: [2, 20],
+        len: [2, 30],
       },
     },
     url: {
@@ -53,7 +53,6 @@ const Items = connection.define(
     priority: {
       type: DataTypes.INTEGER,
       allowNull: true,
-      defaultValue: 0,
     },
     created_at: {
       allowNull: true,

@@ -12,7 +12,7 @@ class ItemService {
         priority,
       });
 
-      return { message: "Item criado com sucesso", item };
+      return item;
     } catch (error) {
       console.log(error);
       throw new Error(
@@ -74,7 +74,8 @@ class ItemService {
         where: { user_id, id },
       });
 
-      if (item === 0) {
+      if (item[0] === 0) {
+        console.log("ITEM NAO ENCONTRADO");
         return;
       }
 
@@ -87,18 +88,12 @@ class ItemService {
 
   async delete({ user_id, id }) {
     try {
-      await Items.destroy({ where: { user_id, id } });
+      const itemDeleted = this.getOne({ user_id, item_id: id });
+      const linesDeleted = await Items.destroy({ where: { user_id, id } });
 
-      return { message: "Item deletado com sucesso!" };
+      return linesDeleted === 0 ? null : itemDeleted;
     } catch (e) {
-      console.log(
-        "ITEM A SER DELETADO: ",
-        id,
-        "USER ID",
-        user_id,
-        "ERROR MESSAGE: ",
-        e.message,
-      );
+      console.log(e.message);
       throw new Error("Erro ao deletar item");
     }
   }
