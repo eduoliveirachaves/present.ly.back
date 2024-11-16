@@ -1,6 +1,6 @@
 const { config } = require("dotenv");
-const ItemService = require("../services/item.service");
-const helper = require("../helpers/responseHelper");
+const ItemService = require("./item.service");
+const helper = require("../utils/responseHelper");
 
 config();
 

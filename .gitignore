@@ -131,9 +131,5 @@ dist
 #Intellij
 .idea/
 
-#Prettier
-prettier.config.js
-.prettierrc
-
 #http tester
 *.http

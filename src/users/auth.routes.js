@@ -1,4 +1,4 @@
-const { login } = require("../controllers/auth.controller");
+const { login } = require("./auth.controller");
 const { Router } = require("express");
 
 class AuthRoutes {

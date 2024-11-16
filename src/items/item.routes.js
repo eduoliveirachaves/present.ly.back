@@ -1,6 +1,6 @@
 const { Router } = require("express");
 const { auth } = require("../middleware/auth");
-const c = require("../controllers/item.controller");
+const c = require("./item.controller");
 
 class ItemRoutes {
   routesFromItems() {

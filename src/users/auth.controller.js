@@ -1,7 +1,7 @@
-const { Users } = require("../models/user.model");
+const { Users } = require("./user.model");
 const { config } = require("dotenv");
 const { sign } = require("jsonwebtoken");
-const AuthService = require("../services/auth.service");
+const AuthService = require("./auth.service");
 
 config();
 

@@ -1,4 +1,4 @@
-const { Items } = require("../models/item.model");
+const { Items } = require("./item.model");
 
 class ItemService {
   async create({ user_id, name, description, category, url, priority }) {
