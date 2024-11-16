@@ -37,6 +37,33 @@ class UserService {
 
     return user;
   }
+
+  async viewProfile({ id }) {
+    try {
+      const user = await Users.findOne({ where: { id } });
+    } catch (e) {
+      console.log(e.message);
+      throw new Error("Erro ao buscar usuário");
+    }
+  }
+
+  async editProfile({ id, name, lastName, birthDate, phone, email }) {
+    try {
+      const newUser = {
+        name,
+        lastName,
+        birthDate,
+        phone,
+        email,
+      };
+      const user = await Users.update(newUser, { where: { id } });
+
+      return await this.viewProfile({ id });
+    } catch (e) {
+      console.log(e.message);
+      throw new Error("Erro ao editar usuário");
+    }
+  }
 }
 
 module.exports = new UserService();
