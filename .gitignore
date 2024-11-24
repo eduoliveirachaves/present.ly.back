@@ -133,3 +133,4 @@ dist
 
 #http tester
 *.http
+.history/*

@@ -1,28 +1,29 @@
 const { Router } = require("express");
 const { auth } = require("../middleware/auth");
-const c = require("./item.controller");
+const c = require("./gift.controller");
 
-class ItemRoutes {
-  routesFromItems() {
-    const itemRoutes = Router();
+class GiftRoutes {
+  routesFromGifts() {
+    const giftRoutes = Router();
 
-    itemRoutes.use(auth);
+    giftRoutes.use(auth);
 
     // create
-    itemRoutes.post("/", c.createItem);
+    giftRoutes.post("/", c.createGift);
 
     // list
-    itemRoutes.get("/", c.getAllItems);
-    itemRoutes.get("/:id", c.getOneItem);
+    giftRoutes.get("/", c.getAllGifts);
+    giftRoutes.get("/:id", c.getOneGift);
+    giftRoutes.get("/list/:id", c.getGiftList);
 
     // edit
-    itemRoutes.put("/:id", c.editItem);
+    giftRoutes.put("/:id", c.editGift);
 
     // delete
-    itemRoutes.delete("/:id", c.deleteItem);
+    giftRoutes.delete("/:id", c.deleteGift);
 
-    return itemRoutes;
+    return giftRoutes;
   }
 }
 
-module.exports = new ItemRoutes();
+module.exports = new GiftRoutes();

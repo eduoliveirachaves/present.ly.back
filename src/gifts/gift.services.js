@@ -1,49 +1,98 @@
-const { Items } = require("./item.model");
+const { Gifts } = require("../models/gift.model");
+const { Lists } = require("../models/list.model");
 
-class ItemService {
-  async create({ user_id, name, description, category, url, priority }) {
+class GiftServices {
+  async createGift({ user_id, name, description, url, priority, list_id }) {
     try {
-      const item = await Items.create({
+      // Encontra ou cria uma lista com base no list_id e user_id se fornecido
+      let list;
+      if (!list_id) {
+        const list_name = "Minha Lista";
+        [list] = await Lists.findOrCreate({
+          where: { name: list_name, user_id },
+        });
+      } else {
+        list = await Lists.findOne({
+          where: { id: list_id, user_id },
+        });
+      }
+
+      const gift = await Gifts.create({
         user_id,
         name,
         description,
-        category,
         url,
         priority,
       });
 
-      return item;
+      await list.addGift(gift);
+
+      return gift;
     } catch (error) {
       console.log(error);
       throw new Error(
-        "Nao foi possivel criar o item, userId e nome: " + user_id + " " + name,
+        "Não foi possível criar o item, userId e nome: " + user_id + " " + name,
       );
     }
   }
 
-  async getAll({ user_id, filter }) {
+  createList({ user_id, name }) {
     try {
+      // Cria uma nova lista com o user_id e nome fornecidos
+      return Lists.create({ user_id, name });
+    } catch (error) {
+      // Loga o erro e lança uma nova mensagem de erro
+      console.log(error);
+      throw new Error("Nao foi possivel criar a lista");
+    }
+  }
+
+  async getGiftList({ user_id, list_id }) {
+    try {
+      const list = await Lists.findOne({ where: { id: list_id, user_id } });
+      if (!list) {
+        throw new Error("Lista não encontrada");
+      }
+
+      const gifts = await list.getGifts();
+
+      return { list, gifts };
+    } catch (error) {
+      console.error(error);
+      throw new Error("Erro ao buscar a lista");
+    }
+  }
+
+  async getAllGifts({ user_id, filter }) {
+    try {
+      // Cria um filtro baseado na categoria, se fornecida
       const f = filter.category
         ? { user_id, category: filter.category }
         : { user_id };
+
+      // Define a ordem dos resultados com base na data ou prioridade
       const orderFilter = filter.date
         ? [["created_at", "DESC"]]
         : [["priority", "DESC"]];
-      const data = await Items.findAll({
+
+      // Busca todos os presentes que correspondem ao filtro e ordem
+      const data = await Gifts.findAll({
         where: f,
         order: orderFilter,
       });
 
+      // Retorna os dados encontrados ou null se nenhum presente for encontrado
       return data.length ? data : null;
     } catch (error) {
-      console.log("ESTA DANDO ERRO SERVICE " + error.message);
-      throw new Error("Erro ao listar items");
+      // Loga o erro e lança uma nova mensagem de erro
+      console.log(error);
+      throw new Error("Nao foi possivel obter os presentes");
     }
   }
 
-  async getOne({ user_id, item_id }) {
+  async getOneGift({ user_id, item_id }) {
     try {
-      const data = await Items.findOne({
+      const data = await Gifts.findOne({
         where: {
           id: item_id,
           user_id,
@@ -61,7 +110,16 @@ class ItemService {
     }
   }
 
-  async edit({ id, user_id, name, description, category, url, priority }) {
+  async editGift({
+    id,
+    user_id,
+    name,
+    description,
+    category,
+    url,
+    priority,
+    status,
+  }) {
     try {
       const newItem = {
         name,
@@ -69,8 +127,9 @@ class ItemService {
         category,
         url,
         priority,
+        status,
       };
-      const item = await Items.update(newItem, {
+      const item = await Gifts.update(newItem, {
         where: { user_id, id },
       });
 
@@ -79,17 +138,17 @@ class ItemService {
         return;
       }
 
-      return await this.getOne({ user_id, item_id: id });
+      return await this.getOneGift({ user_id, item_id: id });
     } catch (e) {
       console.log("SERVICE ERROR : ", e.message);
       throw new Error("Erro ao atualizar item");
     }
   }
 
-  async delete({ user_id, id }) {
+  async deleteGift({ user_id, id }) {
     try {
-      const itemDeleted = this.getOne({ user_id, item_id: id });
-      const linesDeleted = await Items.destroy({ where: { user_id, id } });
+      const itemDeleted = this.getOneGift({ user_id, item_id: id });
+      const linesDeleted = await Gifts.destroy({ where: { user_id, id } });
 
       return linesDeleted === 0 ? null : itemDeleted;
     } catch (e) {
@@ -99,4 +158,4 @@ class ItemService {
   }
 }
 
-module.exports = new ItemService();
+module.exports = new GiftServices();

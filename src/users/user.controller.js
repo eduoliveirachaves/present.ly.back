@@ -1,5 +1,6 @@
 const { config } = require("dotenv");
 const UserService = require("./user.service");
+const giftService = require("./../gifts/gift.services");
 const helper = require("./../utils/responseHelper");
 
 config();
@@ -19,6 +20,7 @@ class UsersController {
         email,
         password,
       });
+
       return res.status(201).send({ data: "Usuario salvo com sucesso!" });
     } catch (error) {
       return res.status(400).send({

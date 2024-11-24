@@ -1,12 +1,8 @@
-const { DataTypes } = require("sequelize");
-const { connection } = require("../database/connection");
+const { DataTypes } = require('sequelize');
+const { connection } = require('../database/connection');
 
-//o que exatamente vamos salvar? preco? nao, descricao? opcional, link? sim, categoria? opcional eu acho
-//o que e possivel pegar do link?
-//link e obrigatorio? sim
-
-const Items = connection.define(
-  "Items",
+const Gifts = connection.define(
+  'Gifts',
   {
     id: {
       type: DataTypes.INTEGER,
@@ -18,8 +14,8 @@ const Items = connection.define(
       type: DataTypes.INTEGER,
       allowNull: false,
       references: {
-        model: "Users",
-        key: "id",
+        model: 'Users',
+        key: 'id',
       },
     },
     name: {
@@ -36,13 +32,6 @@ const Items = connection.define(
         len: [2, 100],
       },
     },
-    category: {
-      type: DataTypes.STRING(30),
-      allowNull: true,
-      validate: {
-        len: [2, 30],
-      },
-    },
     url: {
       type: DataTypes.STRING,
       allowNull: false,
@@ -54,13 +43,23 @@ const Items = connection.define(
       type: DataTypes.INTEGER,
       allowNull: true,
     },
+    status: {
+      type: DataTypes.STRING(30),
+      allowNull: true,
+      defaultValue: 'Não comprado',
+      validate: {
+        len: [2, 30],
+      },
+    },
     created_at: {
       allowNull: true,
       type: DataTypes.DATE,
+      defaultValue: DataTypes.NOW,
     },
     updated_at: {
       allowNull: true,
       type: DataTypes.DATE,
+      defaultValue: DataTypes.NOW,
     },
     deleted_at: {
       allowNull: true,
@@ -68,10 +67,11 @@ const Items = connection.define(
     },
   },
   {
-    tableName: "Items",
+    tableName: 'Gifts',
     timestamps: true,
     paranoid: true,
-  },
+    underscored: true,
+  }
 );
 
-module.exports = { Items: Items };
+module.exports = { Gifts };

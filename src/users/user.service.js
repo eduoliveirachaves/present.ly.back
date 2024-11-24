@@ -1,5 +1,6 @@
-const { Users } = require("./user.model");
+const { Users } = require("../models/user.model");
 const { sign } = require("jsonwebtoken");
+const giftService = require("../gifts/gift.services");
 
 class UserService {
   async createUser({
@@ -12,13 +13,18 @@ class UserService {
     password,
   }) {
     try {
-      await Users.create({
+      const data = await Users.create({
         name,
         lastName,
         birthDate,
         phone,
         email,
         password,
+      });
+
+      await giftService.createList({
+        user_id: data.id,
+        name: "Lista de Desejos",
       });
 
       return { message: "Usuario salvo com sucesso!" };

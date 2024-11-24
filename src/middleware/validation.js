@@ -11,7 +11,7 @@ class Validation {
     next();
   }
 
-  async validateInput(req, res, next) {
+  async validate(req, res, next) {
     await body("name").isString().run(req);
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
