@@ -1,7 +1,7 @@
 const { config } = require("dotenv");
-const UserService = require("./user.service");
-const giftService = require("./../gifts/gift.services");
-const helper = require("./../utils/responseHelper");
+const UserService = require("../services/user.service");
+const giftService = require("../services/gift.services");
+const helper = require("../utils/responseHelper");
 
 config();
 
@@ -44,18 +44,36 @@ class UsersController {
   async editProfile(req, res) {
     try {
       const id = req.user.id;
-      const { name, lastName, birthDate, phone, email, password } = req.body;
+      const { name, lastName, birthDate, phone, email } = req.body;
+
       const data = await UserService.editProfile({
         id,
         name,
         lastName,
         birthDate,
         phone,
-        email,
+        email
       });
       return helper.success(res, "Usuario editado com sucesso", data);
     } catch (error) {
       return helper.error(res, "Erro ao editar usuário");
+    }
+  }
+
+  async editPassword (req, res) {
+    try {
+      const id = req.user.id;
+      const { senha } = req.body;
+
+      if (!senha) {
+        return helper.error(res, "Nova senha nao fornecida", 400)
+      }
+      
+      await UserService.editPassword({ id , senha })
+
+      return helper.success(res, "Senha editada!", 200)
+    } catch (error) {
+      helper.error(res, "Nao foi possivel editar a senha")
     }
   }
 }

@@ -1,7 +1,8 @@
 const { Router } = require("express");
-const { routesFromAuth } = require("../auth/auth.routes");
-const { routesFromUsers } = require("../users/user.routes");
-const { routesFromGifts } = require("../gifts/gift.routes.js");
+const { routesFromAuth } = require("./auth.routes");
+const { routesFromUsers } = require("./user.routes");
+const { routesFromGifts } = require("./gift.routes.js");
+
 const routes = Router();
 
 routes.use("/api", [
@@ -9,5 +10,4 @@ routes.use("/api", [
   routesFromUsers(),
   [routes.use("/gift", routesFromGifts())],
 ]);
-
-module.exports = routes;
+module.exports = routes; 

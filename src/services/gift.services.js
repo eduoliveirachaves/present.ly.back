@@ -36,10 +36,10 @@ class GiftServices {
     }
   }
 
-  createList({ user_id, name }) {
+  async createList({ user_id, name }) {
     try {
       // Cria uma nova lista com o user_id e nome fornecidos
-      return Lists.create({ user_id, name });
+      return await Lists.create({ user_id, name });
     } catch (error) {
       // Loga o erro e lança uma nova mensagem de erro
       console.log(error);
@@ -90,6 +90,17 @@ class GiftServices {
     }
   }
 
+  async getAllLists({ user_id }) {
+    try {
+      console.log("\n testeeeeeeee \n")
+      const data = await Lists.findAll({ where: { user_id } });
+      return data;
+    } catch (error) {
+      console.error();
+      throw new Error(error.message);
+    }
+  }
+
   async getOneGift({ user_id, item_id }) {
     try {
       const data = await Gifts.findOne({
@@ -110,6 +121,7 @@ class GiftServices {
     }
   }
 
+  //edita um presente
   async editGift({
     id,
     user_id,
@@ -131,8 +143,9 @@ class GiftServices {
       };
       const item = await Gifts.update(newItem, {
         where: { user_id, id },
-      });
+      }); 
 
+      //verifica quantidade de items atualizados
       if (item[0] === 0) {
         console.log("ITEM NAO ENCONTRADO");
         return;
@@ -145,6 +158,24 @@ class GiftServices {
     }
   }
 
+  //edita uma lista (apenas o nome)
+  async editList({ user_id, list_id, name }) {
+    try {
+      const list = await Lists.update(
+        { name },
+        { where: { user_id, id: list_id } },
+      );
+
+      if (list[0] === 0) {
+        return;
+      }
+    } catch (error) {
+      console.error(error.message);
+      throw new Error("Erro ao editar lista");
+    }
+  }
+
+  //deleta um presente (marca como deletado)
   async deleteGift({ user_id, id }) {
     try {
       const itemDeleted = this.getOneGift({ user_id, item_id: id });
@@ -154,6 +185,25 @@ class GiftServices {
     } catch (e) {
       console.log(e.message);
       throw new Error("Erro ao deletar item");
+    }
+  }
+  
+  //deleta uma lista (marca como deletado)
+  async deleteList({ user_id, id }) {
+    console.log("user_id: ", user_id, "list_id: ", id);
+    try {
+      const list = await Lists.findOne({ where: { user_id, id } });
+      if (!list) {
+        throw new Error("Lista não encontrada");
+      }
+
+      const listDeleted = list;
+      await list.destroy();
+
+      return listDeleted;
+    } catch (error) {
+      console.error(error.message);
+      throw new Error("Erro ao deletar lista");
     }
   }
 }

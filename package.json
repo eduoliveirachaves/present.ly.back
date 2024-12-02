@@ -7,7 +7,6 @@
   "license": "MIT",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start:dev": "nodemon src/index.js",
     "dev": "nodemon src/index.js"
   },
   "dependencies": {
@@ -21,6 +20,7 @@
     "sequelize": "^6.37.5",
     "sequelize-cli": "^6.6.2",
     "swagger-autogen": "^2.23.7",
+    "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^5.0.1"
   },
   "devDependencies": {

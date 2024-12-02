@@ -1,6 +1,6 @@
 const bcrypt = require("bcrypt");
 const { sign, verify } = require("jsonwebtoken");
-const UserService = require("../users/user.service");
+const UserService = require("../services/user.service");
 const { config } = require("dotenv");
 
 config();

@@ -1,10 +1,17 @@
 const { config } = require("dotenv");
-const GiftService = require("./gift.services");
+const GiftService = require("../services/gift.services");
+//helper usado praa padronizar as respostas
 const helper = require("../utils/responseHelper");
 
 config();
 
-class ItemsController {
+class GiftController {
+
+  /*
+    Por padrao todo presente e adicionado a uma lista, se nenhuma lista e fornecida 
+    sera criado uma lista padrao e o item sera vinculado a ela
+    // pensado em razao do usuario que for novo e nao tiver feito ainda sua propria lista
+  */
   async createGift(req, res) {
     try {
       const user_id = req.user.id;
@@ -19,7 +26,7 @@ class ItemsController {
       const newItem = await GiftService.createGift({
         user_id,
         name,
-        description: description || null,
+        description,
         url,
         priority: priority || 0,
         list_id: list_id || null,
@@ -31,6 +38,8 @@ class ItemsController {
     }
   }
 
+  //cria uma lista personalizada
+  //so requer nome
   async createList(req, res) {
     try {
       const user_id = req.user.id;
@@ -48,7 +57,10 @@ class ItemsController {
     }
   }
 
-  //sem filtro ele pega por prioridade, o usuario tem a opcao de destacar algum item que ele queira mais
+  /*
+  retorna todos os presentes, nao importando lista e sem categoriza - los por elas 
+  // opcoes de filtro -- data? -- ? -- filtrar por prioridade -- abc asc
+  */
   async getAllGifts(req, res) {
     try {
       const user_id = req.user.id;
@@ -70,7 +82,9 @@ class ItemsController {
       return helper.error(res, "Erro ao buscar items");
     }
   }
-
+  /*
+  retorna uma lista apenas se ela nao estiver vazia (e existir)
+  */
   async getGiftList(req, res) {
     try {
       const user_id = req.user.id;
@@ -83,10 +97,11 @@ class ItemsController {
 
       helper.success(res, "Lista encontrada!", list);
     } catch {
-      helper.error(res, "Nao foi possivel buscar pela lista", 400);
+      helper.error(res, "Lista nao encontrada", 400);
     }
   }
 
+  //retorna um presente
   async getOneGift(req, res) {
     try {
       const user_id = req.user.id;
@@ -104,7 +119,8 @@ class ItemsController {
     }
   }
 
-  // Obtém todas as listas do usuário
+  // Retorna todas as listas pertencentes a um usuario
+  // sem o conteudo delas
   async getAllLists(req, res) {
     try {
       const user_id = req.user.id;
@@ -121,24 +137,7 @@ class ItemsController {
     }
   }
 
-  // Obtém uma lista específica do usuário
-  async getOneList(req, res) {
-    try {
-      const user_id = req.user.id;
-      const list_id = req.params.id;
-      const list = await GiftService.getOneList({ user_id, list_id });
-
-      if (!list) {
-        return helper.error(res, "Lista não encontrada", 400);
-      }
-
-      return helper.success(res, "Lista encontrada", list, 200);
-    } catch (error) {
-      console.log(error.message);
-      return helper.error(res, "Erro ao buscar lista");
-    }
-  }
-
+  // edita um presente
   async editGift(req, res) {
     try {
       const id = req.params.id;
@@ -166,6 +165,7 @@ class ItemsController {
     }
   }
 
+  //edita uma lista, feito para mudar o nome apenas por enquanto
   async editList(req, res) {
     try {
       const id = req.params.id;
@@ -185,6 +185,7 @@ class ItemsController {
     }
   }
 
+  //deleta um presente (marca como deletado)
   async deleteGift(req, res) {
     try {
       const user_id = req.user.id;
@@ -201,6 +202,7 @@ class ItemsController {
     }
   }
 
+  //deleta uma lista (marca como deletado)
   async deleteList(req, res) {
     try {
       const user_id = req.user.id;
@@ -218,4 +220,4 @@ class ItemsController {
   }
 }
 
-module.exports = new ItemsController();
+module.exports = new GiftController();
